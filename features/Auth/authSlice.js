@@ -10,6 +10,7 @@ export const authSlice = createSlice({
     Token: null,
     isLoggedIn: false,
     loading: false,
+    getTokenLoading: true,
   },
   reducers: {},
   extraReducers: builder => {
@@ -38,8 +39,19 @@ export const authSlice = createSlice({
         state.loading = false;
         state.isLoggedIn = false;
       })
+      .addCase(initAsync.rejected, (state, action) => {
+        console.log('init-rejected');
+        state.getTokenLoading = false;
+        state.isLoggedIn = action.payload;
+      })
+      .addCase(initAsync.pending, (state, action) => {
+        console.log('init-pending');
+        state.getTokenLoading = true;
+        state.isLoggedIn = action.payload;
+      })
       .addCase(initAsync.fulfilled, (state, action) => {
-        state.loading = true;
+        console.log('init-fullfilled');
+        state.getTokenLoading = false;
         state.isLoggedIn = action.payload;
       });
   },
